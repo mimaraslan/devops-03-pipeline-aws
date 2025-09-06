@@ -16,6 +16,9 @@ Monitoring:      (Prometheus, Grafana, ELK)
 
 <hr>
 
+
+
+
 AWS CLI kurulacak.
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
@@ -75,4 +78,53 @@ En sonda da Enter'a bas.
 Makineyi yeniden başlat.
 
 sudo init 6     ya da       sudo reboot
+
+===============================
+
+AWS EC2 makinemi dış dünyaya açtık.
+Security groups kısmına gittik.
+Dışarıdan 8080 portundan erişime izin verdik.
+
+
+=======Java'yı kuracağız.========================
+
+Terminale Java yaz ve enter'a bas. Açılan komutlardan birini al ve çalıştır.
+
+sudo apt install openjdk-21-jre  -y
+
+java --version
+
+
+=======Jenkins'i kuracağız.========================
+
+https://www.jenkins.io/doc/book/installing/linux/
+
+
+
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+https://pkg.jenkins.io/debian/jenkins.io-2023.key
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
+https://pkg.jenkins.io/debian binary/ | sudo tee \
+/etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update
+sudo apt-get install jenkins  -y
+
+
+
+
+Aşağıdaki komutları sırasıyla çalıştıracağız.
+Bu makineyi Jenkins'e adıyoruz.
+Makineyi kapatıp açtığımızda Jenkins otomatik olarak çalışır durumda olacak.
+
+sudo systemctl enable jenkins
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+
+
+Bu terminal'i kapatmadım sadece o durumdan çıktım. Terminalim açık.
+Ctrl + C
+
+Terminalime bu komutu yazıp Jenkins'in admin parolasını öğrendik.
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+
 
