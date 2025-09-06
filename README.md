@@ -18,7 +18,6 @@ Monitoring:      (Prometheus, Grafana, ELK)
 
 
 
-
 AWS CLI kurulacak.
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
@@ -43,7 +42,7 @@ Ctrl + X
 ssh MyAWSKeyPair
 
 
-===============================
+===My Jenkins Master ============================
 
 Windows
 MobaXterm üzerinden Session -> SSH oluşturacağız.
@@ -84,7 +83,6 @@ sudo init 6     ya da       sudo reboot
 AWS EC2 makinemi dış dünyaya açtık.
 Security groups kısmına gittik.
 Dışarıdan 8080 portundan erişime izin verdik.
-
 
 =======Java'yı kuracağız.========================
 
@@ -128,3 +126,60 @@ Terminalime bu komutu yazıp Jenkins'in admin parolasını öğrendik.
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 
+
+
+=== My Jenkins Agent ============================
+
+Windows
+MobaXterm üzerinden Session -> SSH oluşturacağız.
+
+
+Terminalden bu 2 komutu sırayla çalıştıracağız.
+
+sudo apt update
+
+sudo apt upgrade  -y
+
+
+===============================
+
+İç IP adının yerine bir isim vereceğiz.
+sudo nano /etc/hostname
+
+isim olarak aşağıdakini yazdık.
+My-Jenkins-Agent
+
+Ctrl + X'e bas.
+Onaylamak için Y harfine bas.
+En sonda da Enter'a bas.
+
+
+Makineyi yeniden başlat.
+
+sudo init 6     
+ya da       
+sudo reboot
+
+
+
+=======Java'yı kuracağız.========================
+
+Terminale Java yaz ve enter'a bas. Açılan komutlardan birini al ve çalıştır.
+
+sudo apt install openjdk-21-jre  -y
+
+java --version
+
+java -version
+
+
+Bu My Jenkins Agent Docker'a özeldir.
+===== Docker kuracağız. ==========================
+
+Terminale gelip sadece docker yaz ve enter'a.
+
+sudo apt  install docker.io  -y
+
+sudo usermod -aG docker $USER
+
+sudo reboot
