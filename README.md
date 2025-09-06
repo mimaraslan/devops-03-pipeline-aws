@@ -258,7 +258,7 @@ sudo cat  id_ed25519.pub
 
 İçindeki böyle yazan satırı alıp kopyalayın.
 
-ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE9RkuXUmT8WhXeqLskDaxQi7W8pWdBJWw2VEDktsVOY ubuntu@My-Jenkins-Master
+ssh-ed25519 AAAAAAAAAAAAA ubuntu@My-Jenkins-Master
 
 
 
