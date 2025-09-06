@@ -16,107 +16,63 @@ Monitoring:      (Prometheus, Grafana, ELK)
 
 <hr>
 
-### Jenkins enregrasyon aşamaları
-```
-Kod ---> GitHub    --->  Jenkins      --->  DockerHub  --->  Kubernetes
-         GitLab           -Git              -image            -container   
-         Bitbucket        -Java
-                          -Python
-                          -C#
-                          -Maven
-                          -Gradle
-                          -Docker
-                          -Kubernetes
-```
+AWS CLI kurulacak.
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
-<hr>
+aws --version
 
-### Jenkins'i indirmek
-https://www.jenkins.io/download/
+MacOS
 
+ls -la ~/
+mv ~/Downloads/MyAWSKeyPair.pem ~/.ssh/
+chmod 400 ~/.ssh/MyAWSKeyPair.pem
+nano ~/.ssh/config
 
-### Jenkins'i war dosyasından çalıştırmak
-https://www.jenkins.io/doc/book/installing/war-file/
+Host MyDevOpsAWS
+HostName 54.204.235.127
+User ubuntu
+IdentityFile ~/.ssh/MyAWSKeyPair.pem
 
-```
-cd D:\DevOps
+Ctrl + O
+Enter
+Ctrl + X
 
-java -jar jenkins.war --httpPort=9999
-```
-
-<hr>
-
-###  Docker'a Terminalden Login olmak.
-```
-docker login -u           mimaraslan    -p          123456789
-
-docker login --username   mimaraslan    --password  123456789
-
-docker login -u           mimaraslan    --password  123456789
-
-```
+ssh MyAWSKeyPair
 
 
+===============================
 
-### Jar dosyasının Docker'a image olarak göndermek
-```
-docker build    --build-arg   JAR_FILE=target/devops-application.jar      --tag mimaraslan/devops-application:latest   .
+Windows
+MobaXterm üzerinden Session -> SSH oluşturacağız.
 
-docker build    --build-arg   JAR_FILE=target/devops-application.jar      -t mimaraslan/devops-application:latest   .
 
-docker build    --tag mimaraslan/devops-application:latest   .
+Terminalden bu 2 komutu sırayla çalıştıracağız.
 
-docker build  -t mimaraslan/devops-application:latest   .
-```
+sudo apt update
 
-<hr>
+sudo apt upgrade  -y
 
-### GitHub Token for DevOps
-https://github.com/settings/tokens/new
 
-### DockerHub Token for DevOps
-https://app.docker.com/accounts/mimaraslan/settings/personal-access-tokens
+===============================
+
+İç IP adının yerine bir isim vereceğiz.
+sudo nano /etc/hostname
+
+isim olarak aşağıdakini yazdık.
+My-Jenkins-Master
+
+Ctrl + X'e bas.
+Onaylamak için Y harfine bas.
+En sonda da Enter'a bas.
+
+veya
+
+Ctrl + O'ya bas.
+En sonda da Enter'a bas.
 
 
 
+Makineyi yeniden başlat.
 
-###  DockerHub Token ile Terminalden login olmak
-```
-docker login -u mimaraslan     -p   dckr_pat_y9zp_9RxQEsjw-0DoInBz6_abc
-```
-
-### DockerHub Token ile Jenkins'ten login olmak
-```
-docker login -u mimaraslan     -p   ${DOCKER_HUB_TOKEN}
-
-```
-
-<hr>
-
-### Docker Image'ını DockerHub'a göndermek
-```
-docker push mimaraslan/devops-application:latest
-```
-
-<hr>
-
-### Windows'ta minikube config dosyasının konumu
-```
-C:\Users\YOUR_USERNAME\.kube\config
-```
-
-### MacOS'ta minikube config dosyasının konumu
-```
-~/.kube/config
-```
-
-### minikube
-```
-minikube start
-
-minikube dashboard
-
-minikube service devops-application-service
-```
-
+sudo init 6     ya da       sudo reboot
 
