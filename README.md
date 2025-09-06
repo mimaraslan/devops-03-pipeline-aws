@@ -18,7 +18,6 @@ Monitoring:      (Prometheus, Grafana, ELK)
 
 
 
-
 AWS CLI kurulacak.
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
@@ -258,7 +257,7 @@ sudo cat  id_ed25519.pub
 
 İçindeki böyle yazan satırı alıp kopyalayın.
 
-ssh-ed25519 AAAAAAAAAAAAA ubuntu@My-Jenkins-Master
+ssh-ed25519 AAAAAAAAAAAAAAAAA ubuntu@My-Jenkins-Master
 
 
 
@@ -297,6 +296,50 @@ cd /home/ubuntu/.ssh/
 sudo cat authorized_keys
 
 
+===================================
+Master ve Agent makinelerini yeniden başlat.
 
+sudo reboot
+
+
+
+======================================
+http://PUBLIC_IP:8080/computer/(built-in)/configure
+
+Jenkins'i aç.
+Nodes kısmına gel.
+
+Built-In Node makinesinin içine gir.
+
+Nodes -> Built-In Node -> Configure
+
+Number of executors kısmını SIFIR 0 yap.
+
+
+
+
+
+Agent makineyi Jenkins'e eklemek için
+Nodes -> New node
+
+http://PUBLIC_IP:8080/computer/new
+
+Ona "My-Jenkins-Agent" diye bir isim verdik.
+Permanent Agent olduğunu seçtik.
+
+
+Jenkins'te Agent'ı eklerken onun kendi iç IP'sini alacaksın.
+
+
+====== Master Makinedeki bu anahtarı okuyup kopyalayın ve Jenkins'e gelin. Credentials için ====
+
+cd  /home/ubuntu/.ssh/
+
+sudo cat id_ed25519
+
+
+-----BEGIN OPENSSH PRIVATE KEY-----
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+-----END OPENSSH PRIVATE KEY-----
 
 
