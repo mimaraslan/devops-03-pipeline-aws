@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: devops-application-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: devops-application
+  template:
+    metadata:
+      labels:
+        app: devops-application
+    spec:
+      containers:
+        - name: devops-application
+          image: mimaraslan/devops-application:latest
+          resources:
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+          ports:
+            - containerPort: 8080   # Pod içindeki .jar uygulamanın portu
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: devops-application-service
+  namespace: default
+spec:
+  selector:
+    app: devops-application
+  ports:
+    - port: 9090        # Cluster içinden erişim için Service portu
+      targetPort: 8080  # Pod içindeki container portu
+  type: NodePort      
+#  type: ClusterIP       # Dışarıya açılmaz, port-forward ile kullanacağız
+
