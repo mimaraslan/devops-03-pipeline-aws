@@ -18,6 +18,7 @@ Monitoring:      (Prometheus, Grafana, ELK)
 
 
 
+
 AWS CLI kurulacak.
 https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
@@ -129,6 +130,8 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 
 === My Jenkins Agent ============================
+Bu makine Docker'a özeldir.
+
 
 Windows
 MobaXterm üzerinden Session -> SSH oluşturacağız.
@@ -173,7 +176,8 @@ java --version
 java -version
 
 
-Bu My Jenkins Agent Docker'a özeldir.
+
+
 ===== Docker kuracağız. ==========================
 
 Terminale gelip sadece docker yaz ve enter'a.
@@ -183,3 +187,116 @@ sudo apt  install docker.io  -y
 sudo usermod -aG docker $USER
 
 sudo reboot
+
+
+
+Makineleri birbirne tanıtacağız.
+=== My Jenkins Master için ============================
+
+sudo nano  /etc/ssh/sshd_config
+
+Authentication kısmına gel.
+Aşağıdaki şu iki satırın önündeki açıklama işaretini # kaldır.
+
+
+# Authentication:
+
+PubkeyAuthentication yes
+
+AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
+
+
+Ctrl + X'e bas.
+Onaylamak için Y harfine bas.
+En sonda da Enter'a bas.
+
+sudo service sshd reload
+
+
+=== My Jenkins Agent için ============================
+
+sudo nano  /etc/ssh/sshd_config
+
+Authentication kısmına gel.
+Aşağıdaki şu iki satırın önündeki açıklama işaretini # kaldır.
+
+
+# Authentication:
+
+PubkeyAuthentication yes
+
+AuthorizedKeysFile      .ssh/authorized_keys .ssh/authorized_keys2
+
+
+Ctrl + X'e bas.
+Onaylamak için Y harfine bas.
+En sonda da Enter'a bas.
+
+sudo service sshd reload
+
+
+
+=== My Jenkins Master için ============================
+
+pwd
+
+cd /home/ubuntu
+
+SADECE İÇİN
+Master makinenin takip edilebilmesi için bir şifre anahtar oluşturuyorum.
+
+ssh-keygen
+
+
+cd /home/ubuntu/.ssh/
+
+ll
+
+
+sudo cat  id_ed25519.pub
+
+
+İçindeki böyle yazan satırı alıp kopyalayın.
+
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIE9RkuXUmT8WhXeqLskDaxQi7W8pWdBJWw2VEDktsVOY ubuntu@My-Jenkins-Master
+
+
+
+Sonuna kadar enter'a basıp geç.
+
+
+=== My Jenkins Agent için ============================
+
+cd /home/ubuntu/.ssh/
+
+ll
+
+sudo cat authorized_keys
+
+Bu dosyanın için aç.
+sudo nano authorized_keys
+
+Master'dan aldığın şu satırı en alta yapıştır.
+ssh-ed25519 AAAAAAAAAAAAAAAAA ubuntu@My-Jenkins-Master
+
+
+==== Agent Takip eden taraf ===
+ssh-rsa BBBBBBBBBBBBBBBBBB MyAWSKeyPair
+
+==== Master'dan getirdiğim keygen anahtar takip edilecek taraf ===
+ssh-ed25519 AAAAAAAAAAAAAAAAA ubuntu@My-Jenkins-Master
+
+
+Ctrl + X'e bas.
+Onaylamak için Y harfine bas.
+En sonda da Enter'a bas.
+
+
+cd /home/ubuntu/.ssh/
+
+sudo cat authorized_keys
+
+
+
+
+
