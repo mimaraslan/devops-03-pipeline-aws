@@ -343,7 +343,293 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 -----END OPENSSH PRIVATE KEY-----
 
 
-=====GitHub Token=================
+
+
+
+GitHub Token
 
 MyGitHubTokenForAWS
-abc_DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
+ghp_ABCABCABCABCABCABCABCABCABCABC
+
+
+
+
+=== SonarQube kurulumu ==========
+
+
+Windows
+MobaXterm üzerinden Session -> SSH oluşturacağız.
+
+
+Terminalden bu 2 komutu sırayla çalıştıracağız.
+
+sudo apt update
+
+sudo apt upgrade  -y
+
+
+===============================
+
+İç IP adının yerine bir isim vereceğiz.
+sudo nano /etc/hostname
+
+isim olarak aşağıdakini yazdık.
+My-SonarQube
+
+****
+ÖDEV : hostname'i tek komutla değiştirmeyi bulun.
+sudo hostname My-SonarQube
+***
+
+Ctrl + X'e bas.
+Onaylamak için Y harfine bas.
+En sonda da Enter'a bas.
+
+Makineyi yeniden başlat.
+
+sudo reboot
+
+====  PostgreSQL kurulumu  =====
+
+sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+
+wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
+
+
+
+sudo apt update
+
+sudo apt-get -y install postgresql postgresql-contrib
+
+
+
+sudo systemctl enable postgresql
+
+
+
+sudo passwd postgres
+
+parola: 123456789
+
+
+
+
+
+su - postgres
+
+parola: 123456789
+
+createuser sonar
+
+psql
+
+ALTER USER sonar WITH ENCRYPTED password 'sonar';
+
+CREATE DATABASE sonarqube OWNER sonar;
+
+grant all privileges on DATABASE sonarqube to sonar;
+
+\q
+
+exit
+
+
+
+
+
+
+
+
+
+
+==== Adoptium repository ====
+
+sudo bash
+
+wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
+
+echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
+
+
+
+sudo apt update
+
+
+sudo apt install openjdk-17-jre -y
+
+OR
+
+sudo apt install temurin-17-jdk -y
+
+
+sudo update-alternatives --config java
+
+java --version
+
+
+
+
+
+=== Linux kernel  ===
+
+sudo vim /etc/security/limits.conf
+
+Bir şey eklemek için önce klavyeden i tuşuna bas.
+
+sonarqube   -   nofile   65536
+sonarqube   -   nproc    4096
+
+
+çıkış için ESC tuşuna bas.
+:wq  yaz
+
+
+
+
+
+sudo vim /etc/sysctl.conf
+
+Bir şey eklemek için önce klavyeden i tuşuna bas.
+Eklenecek bilgi aşağıdaki satır.
+
+vm.max_map_count = 262144
+
+
+Çıkış için ESC tuşuna bas.
+:wq  yaz
+
+
+Makineyi yeniden başlat.
+
+sudo init 6
+
+OR
+
+sudo reboot
+
+
+
+
+
+
+==== Sonarqube kurulumu  =====
+
+pwd
+
+cd /opt
+
+sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-10.6.0.92116.zip
+
+sudo apt install unzip
+
+sudo unzip sonarqube-10.6.0.92116.zip -d/opt
+
+pwd
+
+sudo mv   /opt/sonarqube-10.6.0.92116    /opt/sonarqube
+
+
+
+
+sonar kullanıcı oluşturulacak ve haklar verilecek
+
+
+sudo groupadd sonar
+
+sudo useradd -c "user to run SonarQube" -d /opt/sonarqube -g sonar sonar
+
+sudo chown sonar:sonar /opt/sonarqube -R
+
+
+
+veritabanıyla bu kullanıcıyı konuştur
+
+sudo vim /opt/sonarqube/conf/sonar.properties
+
+sonar.jdbc.username=sonar
+sonar.jdbc.password=sonar
+
+sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
+
+
+
+
+
+
+
+
+Sonar servisini oluşturacağız.
+
+sudo vim /etc/systemd/system/sonar.service
+
+
+Aşağıdaki kodları olduğu gibi bu dosyanın içine yapıştır.
+
+
+
+[Unit]
+Description=SonarQube service
+After=syslog.target network.target
+
+[Service]
+Type=forking
+
+ExecStart=/opt/sonarqube/bin/linux-x86-64/sonar.sh start
+ExecStop=/opt/sonarqube/bin/linux-x86-64/sonar.sh stop
+
+User=sonar
+Group=sonar
+Restart=always
+
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target
+
+
+
+
+Makine açıldığında sonarqube otomatik olarak çalıştırma komutları
+
+sudo systemctl enable sonar
+
+sudo systemctl start sonar
+
+sudo systemctl status sonar
+
+
+
+
+
+=== Log takibi ===
+
+sudo tail -f /opt/sonarqube/logs/sonar.log
+
+
+Makinenin public ip değerini al ve 9000 portundan giriş yap.
+kullanıcı: admin
+parola: admin
+
+Jenkins için token oluştur.
+
+Administrator  -> Security
+
+http://MAKINENIN_PUBLIC_IP_DEGERI:9000/account/security
+
+
+
+jenkins-sonarqube-token
+sqa_EEEEEEEEEEEEEEEEEEEEEEEEEEE
+
+
+Jenkins içinde tokenı kaydettir.
+
+Pluginleri kur.
+
+Sonar'ın kurulduğu makinenin Private IPv4 addresses değerini kopayla.
+
+
+
+http://PUBLIC_IP:8080/
+
