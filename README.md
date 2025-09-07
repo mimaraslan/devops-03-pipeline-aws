@@ -391,6 +391,8 @@ sudo reboot
 
 ====  PostgreSQL kurulumu  =====
 
+```
+
 sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
 
 wget -qO- https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo tee /etc/apt/trusted.gpg.d/pgdg.asc &>/dev/null
@@ -402,9 +404,11 @@ sudo apt update
 sudo apt-get -y install postgresql postgresql-contrib
 
 
+```
 
 sudo systemctl enable postgresql
 
+sudo systemctl status postgresql
 
 
 sudo passwd postgres
@@ -413,7 +417,7 @@ parola: 123456789
 
 
 
-
+=== Veritabanına terminalden en baş yetkili olarak giriş yapmak istiyorum.
 
 su - postgres
 
@@ -454,12 +458,14 @@ echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.n
 
 sudo apt update
 
+sudo apt     install temurin-17-jdk  -y
 
+Aşağıdaki komutta aynı işi yapar.
+sudo apt-get install temurin-17-jdk  -y
+
+== JRE bunu da kurmayacağız.
 sudo apt install openjdk-17-jre -y
 
-OR
-
-sudo apt install temurin-17-jdk -y
 
 
 sudo update-alternatives --config java
@@ -472,16 +478,22 @@ java --version
 
 === Linux kernel  ===
 
+== Vim ve Nano terminalden dosyaların içine yazı yazmak içindir.
 sudo vim /etc/security/limits.conf
 
 Bir şey eklemek için önce klavyeden i tuşuna bas.
 
+== Nano ile çalışmak daha kolaydır.
+sudo nano /etc/security/limits.conf
+
+
+== Bu iki satırı dosyanın en altına ekle yapıştır.
 sonarqube   -   nofile   65536
 sonarqube   -   nproc    4096
 
 
 çıkış için ESC tuşuna bas.
-:wq  yaz
+:wq  yaz ve enter'a bas.
 
 
 
@@ -501,10 +513,6 @@ vm.max_map_count = 262144
 
 Makineyi yeniden başlat.
 
-sudo init 6
-
-OR
-
 sudo reboot
 
 
@@ -518,20 +526,23 @@ pwd
 
 cd /opt
 
-sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-10.6.0.92116.zip
+sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.9.0.112764.zip
 
+== Ziplenmiş bir dosyayı ubuntuda açkmak için bu uygulamayı indirdim.
 sudo apt install unzip
 
-sudo unzip sonarqube-10.6.0.92116.zip -d/opt
+
+sudo unzip sonarqube-25.9.0.112764.zip -d/opt
 
 pwd
 
-sudo mv   /opt/sonarqube-10.6.0.92116    /opt/sonarqube
+sudo mv   /opt/sonarqube-25.9.0.112764    /opt/sonarqube
 
 
 
 
-sonar kullanıcı oluşturulacak ve haklar verilecek
+
+=== sonar kullanıcı oluşturulacak ve haklar verilecek
 
 
 sudo groupadd sonar
@@ -542,7 +553,7 @@ sudo chown sonar:sonar /opt/sonarqube -R
 
 
 
-veritabanıyla bu kullanıcıyı konuştur
+== veritabanıyla bu kullanıcıyı konuştur
 
 sudo vim /opt/sonarqube/conf/sonar.properties
 
@@ -558,7 +569,7 @@ sonar.jdbc.url=jdbc:postgresql://localhost:5432/sonarqube
 
 
 
-Sonar servisini oluşturacağız.
+=== Sonar servisini oluşturacağız.
 
 sudo vim /etc/systemd/system/sonar.service
 
@@ -610,6 +621,10 @@ sudo tail -f /opt/sonarqube/logs/sonar.log
 Makinenin public ip değerini al ve 9000 portundan giriş yap.
 kullanıcı: admin
 parola: admin
+
+
+Adana_01
+
 
 Jenkins için token oluştur.
 
