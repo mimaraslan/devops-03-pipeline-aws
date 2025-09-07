@@ -16,7 +16,7 @@ pipeline {
 
         stage('Test Maven') {
             steps {
-                if(isUnix()) {   // Linux or MacOS
+                if (isUnix()) {   // Linux or MacOS
                     sh 'mvn test'
                 }else{
                     bat 'mvn test'  // Windows
@@ -27,7 +27,7 @@ pipeline {
 
         stage('Build Maven') {
             steps {
-                if(isUnix()) {
+                if (isUnix()) {
                     sh 'mvn clean install'
                 } else {
                     bat 'mvn clean install'
