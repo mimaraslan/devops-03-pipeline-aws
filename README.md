@@ -264,6 +264,7 @@ sudo service sshd reload
 
 <hr>
 === My Jenkins Agent için ============================
+
 ```
 sudo nano  /etc/ssh/sshd_config
 ```
@@ -273,6 +274,7 @@ Aşağıdaki şu iki satırın önündeki açıklama işaretini # kaldır.
 
 <hr>
 ### Authentication:
+
 ```
 PubkeyAuthentication yes
 
@@ -289,6 +291,7 @@ sudo service sshd reload
 
 <hr>
 === My Jenkins Master için ============================
+
 ```
 pwd
 
@@ -321,6 +324,7 @@ Sonuna kadar enter'a basıp geç.
 
 <hr>
 === My Jenkins Agent için ============================
+
 ```
 cd /home/ubuntu/.ssh/
 
@@ -343,12 +347,10 @@ ssh-ed25519 AAAAAAAAAAAAAAAAA ubuntu@My-Jenkins-Master
 
 ssh-rsa BBBBBBBBBBBBBBBBBB MyAWSKeyPair
 
-
 <hr>
 ==== Master'dan getirdiğim keygen anahtar takip edilecek taraf ===
 
 ssh-ed25519 AAAAAAAAAAAAAAAAA ubuntu@My-Jenkins-Master
-
 
 Ctrl + X'e bas.
 Onaylamak için Y harfine bas.
@@ -367,7 +369,6 @@ Master ve Agent makinelerini yeniden başlat.
 sudo reboot
 ```
 
-
 <hr>
 ======================================
 http://PUBLIC_IP:8080/computer/(built-in)/configure
@@ -380,8 +381,6 @@ Built-In Node makinesinin içine gir.
 Nodes -> Built-In Node -> Configure
 
 Number of executors kısmını SIFIR 0 yap.
-
-
 
 
 
@@ -399,9 +398,9 @@ Jenkins'te Agent'ı eklerken onun kendi iç IP'sini alacaksın.
 
 <hr>
 ====== Master Makinedeki bu anahtarı okuyup kopyalayın ve Jenkins'e gelin. Credentials için ====
+
 ```
 cd  /home/ubuntu/.ssh/
-
 sudo cat id_ed25519
 ```
 
@@ -431,6 +430,7 @@ MobaXterm üzerinden Session -> SSH oluşturacağız.
 
 
 Terminalden bu 2 komutu sırayla çalıştıracağız.
+
 ```
 sudo apt update
 
@@ -449,10 +449,12 @@ isim olarak aşağıdakini yazdık.
 My-SonarQube
 
 <hr>
-****
-ÖDEV : hostname'i tek komutla değiştirmeyi bulun.
+
+### ÖDEV : hostname'i tek komutla değiştirmeyi bulun.
+
+```
 sudo hostname My-SonarQube
-***
+```
 <hr>
 
 
@@ -523,10 +525,6 @@ exit
 
 
 
-
-
-
-
 <hr>
 ==== Adoptium repository ====
 
@@ -553,12 +551,14 @@ sudo apt-get install temurin-17-jdk  -y
 
 <hr>
 ### == JRE bunu da kurmayacağız.
+
 ```
 sudo apt install openjdk-17-jre -y
 ```
 
 <hr>
 ###  Java'nın alternatif sürümleri seçmek için
+
 ```
 sudo update-alternatives --config java
 
@@ -572,6 +572,7 @@ java --version
 
 <hr>
 == Vim ve Nano terminalden dosyaların içine yazı yazmak içindir.
+
 ```
 sudo vim /etc/security/limits.conf
 ```
@@ -580,12 +581,14 @@ Bir şey eklemek için önce klavyeden i tuşuna bas.
 
 <hr>
 == Nano ile çalışmak daha kolaydır.
+
 ```
 sudo nano /etc/security/limits.conf
 ```
 
 <hr>
 == Bu iki satırı dosyanın en altına ekle yapıştır.
+
 ```
 sonarqube   -   nofile   65536
 sonarqube   -   nproc    4096
@@ -615,11 +618,10 @@ Makineyi yeniden başlat.
 sudo reboot
 ```
 
-
-
-
 <hr>
+
 ### ==== Sonarqube kurulumu  =====
+
 ```
 pwd
 
@@ -627,6 +629,7 @@ cd /opt
 
 sudo wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-25.9.0.112764.zip
 ```
+
 == Ziplenmiş bir dosyayı ubuntuda açkmak için bu uygulamayı indirdim.
 ```
 sudo apt install unzip
@@ -653,7 +656,8 @@ sudo chown sonar:sonar /opt/sonarqube -R
 ```
 
 <hr>
-== veritabanıyla bu sonar kullanıcısı konuştur
+=== Veritabanıyla bu sonar kullanıcısı konuştur
+
 ```
 sudo vim /opt/sonarqube/conf/sonar.properties
 
@@ -712,17 +716,18 @@ sudo systemctl status sonar
 
 <hr>
 === Log takibi ===
+
 ```
 sudo tail -f /opt/sonarqube/logs/sonar.log
-
 ```
 
 Makinenin public ip değerini al ve 9000 portundan giriş yap.
+```
 kullanıcı: admin
 parola: admin
-
-
+```
 Yeni parloyı verdim.
+
 Adana_01Adana_01
 
 
