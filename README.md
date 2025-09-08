@@ -158,6 +158,7 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 <hr>
 === My Jenkins Agent ============================
+
 Bu makine Docker'a özeldir.
 
 
@@ -363,8 +364,9 @@ sudo cat authorized_keys
 ```
 
 <hr>
-===================================
+
 Master ve Agent makinelerini yeniden başlat.
+
 ```
 sudo reboot
 ```
@@ -550,14 +552,15 @@ sudo apt-get install temurin-17-jdk  -y
 ```
 
 <hr>
-### == JRE bunu da kurmayacağız.
+
+JDK zaten var. JRE bunu sadece örnek olsun diye kuracağız. 
 
 ```
 sudo apt install openjdk-17-jre -y
 ```
 
 <hr>
-###  Java'nın alternatif sürümleri seçmek için
+Java'nın alternatif sürümleri seçmek için
 
 ```
 sudo update-alternatives --config java
@@ -568,9 +571,11 @@ java --version
 
 
 <hr>
-### === Linux kernel  ===
+
+### === Linux kernel sınırlarını genişleteceğiz. ===
 
 <hr>
+
 == Vim ve Nano terminalden dosyaların içine yazı yazmak içindir.
 
 ```
@@ -596,7 +601,6 @@ sonarqube   -   nproc    4096
 
 çıkış için ESC tuşuna bas.
 :wq  yaz ve enter'a bas.
-
 
 
 
