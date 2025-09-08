@@ -27,7 +27,7 @@ aws --version
 ```
 
 
-### MacOS
+#### MacOS
 
 ```
 ls -la ~/
@@ -51,7 +51,8 @@ ssh MyAWSKeyPair
 ```
 
 <hr>
-=== My Jenkins Master ============================
+
+## === Makine 1: My Jenkins Master ============================
 
 Windows
 MobaXterm üzerinden Session -> SSH oluşturacağız.
@@ -157,7 +158,8 @@ sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 
 
 <hr>
-=== My Jenkins Agent ============================
+
+## === Makine 2: My Jenkins Agent ============================
 
 Bu makine Docker'a özeldir.
 
@@ -424,7 +426,8 @@ ghp_ABCABCABCABCABCABCABCABCABCABC
 
 
 <hr>
-=== SonarQube kurulumu ==========
+
+## === Makine 3: SonarQube kurulumu ==========
 
 
 Windows
