@@ -859,8 +859,7 @@ sudo nano /etc/hostname
 ```
 isim olarak aşağıdakini yazdık.
 
-My-Jenkins-Master
-
+My-EKS-Master-Server
 
 Ctrl + X'e bas.
 Onaylamak için Y harfine bas.
@@ -885,3 +884,28 @@ sudo reboot
 
 <hr>
 ===============================
+
+
+1.komut
+apt install unzip -y 
+
+2.komut
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+
+
+
+
+kubectl kuracağız.
+
+Kubernetes 1.33
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.4/2025-08-20/bin/linux/amd64/kubectl
+
+chmod +x ./kubectl
+
+mv kubectl /bin
+
+kubectl version 
+
+kubectl version  --output=yaml
