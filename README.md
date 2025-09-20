@@ -885,6 +885,10 @@ sudo reboot
 <hr>
 ===============================
 
+Root kullanıcısı en yetkili olarak terminalden giriş.
+```
+sudo su
+```
 
 1.komut
 ```
