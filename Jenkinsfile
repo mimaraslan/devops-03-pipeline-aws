@@ -10,20 +10,15 @@ pipeline {
         jdk 'Java21'
     }
 
-    environment {
 
+    environment {
         APP_NAME = "devops-03-pipeline-aws"
         RELEASE = "1.0"
         DOCKER_USER = "mimaraslan"
         DOCKER_LOGIN = 'dockerhub'
-        IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
-        IMAGE_TAG = "${RELEASE}"."${BUILD_NUMBER}"
-
-      //   mimaraslan/devops-03-pipeline-aws:latest
-      //     ${DOCKER_USER}/${APP_NAME}:${IMAGE_TAG}
-
+        IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
+        IMAGE_TAG = "${RELEASE}.${BUILD_NUMBER}"
     }
-
 
     stages {
         stage('SCM GitHub') {
