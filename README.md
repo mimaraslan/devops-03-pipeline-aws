@@ -767,3 +767,121 @@ Sonar'ın kurulduğu makinenin Private IPv4 addresses değerini kopayla.
 
 http://JENKINS_MASTER_MAKINENIN_PUBLIC_IPsi:9000/account/security
 
+
+
+
+
+
+### Docker'ı Jenkins'e entegre edeceğiz.
+
+Jenkins ->  Manage Jenkins  -> Plugins
+
+
+
+MyDockerHubTokenForAWS
+
+docker login -u mimaraslan  -p  dckr_pat_DDDDDDDDDDDDDDDDDDDDDDDDD
+
+
+
+
+Trivy  ile imajları kontrol ediyoruz.
+Jenkinsfile içine bu komutları ekledik. 
+
+        stage("Trivy Scan") {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image mimaraslan/devops-03-pipeline-aws:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
+                     } else {
+                        bat ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image mimaraslan/devops-03-pipeline-aws:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
+                    }
+                }
+            }
+        }
+		
+
+
+
+### Docker imageleri birikiyor. Onları Agent makineden temizlemek lazım.
+
+
+
+
+
+
+// Agent makinesi zamanla dolacak. Docker şişecek dolacak. Temizlik yapmanız lazım.
+// Agent makinede temizlik için yeriniz azalmışsa şu komutları kulanın lütfen.
+// Hatta mümkünse bu kodları buraya uyarlayın lütfen.
+                    
+					
+Elimizle terminalden imajları tek tek silmek komutları 
+
+					docker rmi mimaraslan/devops-03-pipeline-aws:1.0.10
+					docker rmi mimaraslan/devops-03-pipeline-aws:1.0.11
+					docker rmi mimaraslan/devops-03-pipeline-aws:1.0.12
+					docker rmi mimaraslan/devops-03-pipeline-aws:1.0.13
+					docker rmi mimaraslan/devops-03-pipeline-aws:1.0.14
+					docker rmi mimaraslan/devops-03-pipeline-aws:latest
+					
+					
+                    docker rmi   $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'devops-03-pipeline-aws')
+                    docker container rm -f $(docker container ls -aq)
+                    docker volume prune -f 
+
+
+
+
+
+<hr>
+
+## === Makine 4: My EKS Master Server ============================
+K8s için bir makine oluşturduk. İçine Kubernetes kuracağız.
+
+
+Windows
+MobaXterm üzerinden Session -> SSH oluşturacağız.
+
+
+Terminalden bu 2 komutu sırayla çalıştıracağız.
+
+```
+sudo apt update
+
+sudo apt upgrade  -y
+```
+
+===============================
+
+İç IP adının yerine bir isim vereceğiz.
+```
+sudo nano /etc/hostname
+```
+isim olarak aşağıdakini yazdık.
+
+My-Jenkins-Master
+
+
+Ctrl + X'e bas.
+Onaylamak için Y harfine bas.
+En sonda da Enter'a bas.
+
+veya
+
+Ctrl + O'ya bas.
+En sonda da Enter'a bas.
+
+
+
+Makineyi yeniden başlat.
+
+```
+sudo init 6     
+```
+ya da       
+```
+sudo reboot
+```
+
+<hr>
+===============================
