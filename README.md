@@ -117,7 +117,7 @@ java --version
 ```
 
 <hr>
-=======Jenkins'i kuracağız.========================
+======= Jenkins'i kuracağız.========================
 
 https://www.jenkins.io/doc/book/installing/linux/
 
@@ -765,5 +765,8 @@ Tool olarak Sonar Scanner'i tanıt.
 Sonar'ın kurulduğu makinenin Private IPv4 addresses değerini kopayla.
 
 
-http://JENKINS_MASTER_MAKINENIN_PUBLIC_IPsi:8080/
+http://JENKINS_MASTER_MAKINENIN_PUBLIC_IPsi:9000/account/security
+
+
+
 
