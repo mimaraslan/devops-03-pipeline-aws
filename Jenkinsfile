@@ -9,8 +9,6 @@ pipeline {
         maven 'Maven3'
         jdk 'Java21'
     }
-
-
     environment {
         APP_NAME = "devops-03-pipeline-aws"
         RELEASE = "1.0"
@@ -19,15 +17,12 @@ pipeline {
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}.${BUILD_NUMBER}"
     }
-
     stages {
         stage('SCM GitHub') {
             steps {
                 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mimaraslan/devops-03-pipeline-aws']])
             }
         }
-
-
         stage('Test Maven') {
             steps {
                 script {
@@ -40,9 +35,6 @@ pipeline {
                 }
             }
         }
-
-
-
         stage('Build Maven') {
             steps {
                 script {
@@ -54,11 +46,6 @@ pipeline {
                 }
             }
         }
-
-
-
-
-
         stage("SonarQube Analysis") {
             steps {
                 script {
@@ -73,21 +60,13 @@ pipeline {
                 }
             }
         }
-
-
-       stage("Quality Gate"){
-           steps {
-               script {
+        stage("Quality Gate") {
+            steps {
+                script {
                     waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonar-token'
                 }
             }
-       }
-
-
-
-
-
-
+        }
         /*
          stage('Docker Image') {
              steps {
@@ -118,14 +97,10 @@ pipeline {
              }
          }
 */
-
-
         stage('Build & Push Docker Image to DockerHub') {
             steps {
                 script {
-
                     docker.withRegistry('', DOCKER_LOGIN) {
-
                         docker_image = docker.build "${IMAGE_NAME}"
                         docker_image.push("${IMAGE_TAG}")
                         docker_image.push("latest")
@@ -133,14 +108,12 @@ pipeline {
                 }
             }
         }
-
-
         stage("Trivy Scan") {
             steps {
                 script {
                     if (isUnix()) {
                         sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image mimaraslan/devops-03-pipeline-aws:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
-                     } else {
+                    } else {
                         bat ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image mimaraslan/devops-03-pipeline-aws:latest --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
                     }
                 }
@@ -148,10 +121,52 @@ pipeline {
         }
 
 
+        /*
+        stage ('Cleanup Artifacts') {
+            steps {
+                script {
+                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
+                    sh "docker rmi ${IMAGE_NAME}:latest"
+                    // Agent makinesi zamanla dolacak. Docker şişecek dolacak. Temizlik yapmanız lazım.
+                    // Agent makinede temizlik için yeriniz azalmışsa şu komutları kulanın lütfen.
+                    // Hatta mümkünse bu kodları buraya uyarlayın lütfen.
+                    /*
+                    docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'devops-03-pipeline-aws')
+
+                    docker container rm -f $(docker container ls -aq)
+
+                    docker volume prune
+                    */
+                }
+            }
+        }
+        */
 
 
+        stage('Cleanup Old Docker Images') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        // Bu repo için tüm image’leri al, tarihe göre sırala, son 3 hariç sil
+                        sh """
+                            docker images "${env.IMAGE_NAME}" --format "{{.Repository}}:{{.Tag}} {{.CreatedAt}}" \\
+                            | sort -r -k2 \\
+                            | tail -n +4 \\
+                            | awk '{print \$1}' \\
+                            | xargs -r docker rmi -f
+                        """
 
-/*
+                    } else {
+                        bat """
+                             for /f "skip=3 tokens=1" %%i in ('docker images ${env.IMAGE_NAME} --format "{{.Repository}}:{{.Tag}}" ^| sort') do docker rmi -f %%i
+                        """
+                    }
+                }
+            }
+        }
+
+
+        /*
          stage('Deploy Kubernetes') {
              steps {
              script {
