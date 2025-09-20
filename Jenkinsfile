@@ -23,6 +23,8 @@ pipeline {
                 checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/mimaraslan/devops-03-pipeline-aws']])
             }
         }
+
+       /*
         stage('Test Maven') {
             steps {
                 script {
@@ -35,6 +37,9 @@ pipeline {
                 }
             }
         }
+        */
+
+
         stage('Build Maven') {
             steps {
                 script {
@@ -46,6 +51,9 @@ pipeline {
                 }
             }
         }
+
+
+        /*
         stage("SonarQube Analysis") {
             steps {
                 script {
@@ -67,6 +75,11 @@ pipeline {
                 }
             }
         }
+       */
+
+
+
+
         /*
          stage('Docker Image') {
              steps {
@@ -97,6 +110,8 @@ pipeline {
              }
          }
 */
+
+
         stage('Build & Push Docker Image to DockerHub') {
             steps {
                 script {
@@ -108,6 +123,9 @@ pipeline {
                 }
             }
         }
+
+
+ /*
         stage("Trivy Scan") {
             steps {
                 script {
@@ -119,28 +137,20 @@ pipeline {
                 }
             }
         }
+*/
 
 
-        /*
+
+/*
         stage ('Cleanup Artifacts') {
             steps {
                 script {
                     sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
                     sh "docker rmi ${IMAGE_NAME}:latest"
-                    // Agent makinesi zamanla dolacak. Docker şişecek dolacak. Temizlik yapmanız lazım.
-                    // Agent makinede temizlik için yeriniz azalmışsa şu komutları kulanın lütfen.
-                    // Hatta mümkünse bu kodları buraya uyarlayın lütfen.
-                    /*
-                    docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'devops-03-pipeline-aws')
-
-                    docker container rm -f $(docker container ls -aq)
-
-                    docker volume prune
-                    */
                 }
             }
         }
-        */
+*/
 
 
         stage('Cleanup Old Docker Images') {
@@ -164,6 +174,8 @@ pipeline {
                 }
             }
         }
+
+
 
 
         /*
