@@ -13,7 +13,7 @@ Virtualization:  (VMware, VirtualBox)
 IaC:             (Terraform, Ansible, CloudFormation)
 Monitoring:      (Prometheus, Grafana, ELK)
 ```
-
+![img_2.png](img_2.png)
 <hr>
 
 
@@ -1074,8 +1074,9 @@ Kubectl sürümü bilgisini al.
 kubectl version --client
 ```
 
+![img_1.png](img_1.png)
 
-
+![img.png](img.png)
 ### EKS makinesi için us-east-2 bölgesinden 2 tane node oluşturacağız. 
 ```
 eksctl create cluster --name my-workspace-cluster \
