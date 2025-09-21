@@ -205,29 +205,19 @@ pipeline {
 
 
  
+// DockerHub'ın içinde son latest olacak. Son 5 image olsun. Diğer eskileri silinsin.
+/*
+
 stage('Cleanup Old DockerHub Images') {
     steps {
         script {
-            withCredentials([string(credentialsId: 'dockerhub', variable: 'DOCKERHUB_TOKEN')]) {
-                sh """
-                  tags=\$(curl -s -H "Authorization: Bearer $DOCKERHUB_TOKEN" \
-                    https://hub.docker.com/v2/repositories/mimaraslan/devops-03-pipeline-aws/tags/?page_size=100 \
-                    | jq -r '.results[].name' | grep -v latest | sort -Vr)
-
-                  echo "Tags in repo:"
-                  echo "\$tags"
-
-                  # Son 3 sürüm + latest kalsın
-                  echo "\$tags" | tail -n +4 | while read tag; do
-                      echo "Deleting old tag: \$tag"
-                      curl -s -X DELETE -H "Authorization: Bearer $DOCKERHUB_TOKEN" \
-                        https://hub.docker.com/v2/repositories/mimaraslan/devops-03-pipeline-aws/tags/\$tag/
-                  done
-                """
+           
+             
             }
         }
-    }
 }
+
+*/
 
 
 
