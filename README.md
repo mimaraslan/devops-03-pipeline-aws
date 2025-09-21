@@ -885,7 +885,14 @@ sudo reboot
 <hr>
 ===============================
 
-Root kullanıcısı en yetkili olarak terminalden giriş.
+
+### AWS CLI
+
+Web Sayfası
+https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
+
+
+Root kullanıcısı en yetkili yönetici moduna terminalden geç.
 ```
 sudo su
 ```
@@ -905,9 +912,12 @@ sudo ./aws/install
 
 
 
-kubectl kuracağız.
+###  kubectl 
 
-Kubernetes 1.33
+Web Sayfası
+https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html#linux_amd64_kubectl
+
+Kubernetes 1.33 seçtik.
 ```
 curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.33.4/2025-08-20/bin/linux/amd64/kubectl
 
@@ -919,4 +929,14 @@ kubectl version
 
 kubectl version  --output=yaml
 ```
+
+### eksctl
+
+Web Sayfası
+https://docs.aws.amazon.com/eks/latest/eksctl/installation.html
+
+
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+
 
