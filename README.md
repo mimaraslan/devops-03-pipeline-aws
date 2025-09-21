@@ -889,8 +889,7 @@ sudo reboot
 ### AWS CLI
 
 Web Sayfası
-https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
-
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 
 Root kullanıcısı en yetkili yönetici moduna terminalden geç.
 ```
@@ -929,6 +928,8 @@ kubectl version
 
 kubectl version  --output=yaml
 ```
+<hr>
+===============================
 
 ### eksctl
 
@@ -937,6 +938,354 @@ https://docs.aws.amazon.com/eks/latest/eksctl/installation.html
 
 
 
+Docker Hub Token oluştur. 
+MyDockerHubToken terminalden Token ile DockerHub'a bağlan.
+```
+docker login -u mimaraslan  -p  dckr_pat_123456789
+```
+
+Jenkinse DockerHub Token'ı tanıt ekle.
+
+
+
+
+
+Agent makinesi zamanla dolacak. Docker şişecek dolacak. Temizlik yapmanız lazım.
+Agent makinede temizlik için yeriniz azalmışsa şu komutları kulanın lütfen.
+```
+docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'devops-03-pipeline-aws')
+
+docker container rm -f $(docker container ls -aq)
+
+docker volume prune -f
+```
+
+
+<hr>
+===============================
+## === Makine 4:  My EKS (Elastic Kubernetes Service) Server  =====
+```
+sudo apt update
+
+sudo apt upgrade -y
+
+```
+
+Makinenin hostname kısmını aç ve adını güncelle.
+```
+sudo nano /etc/hostname
+```
+
+My-EKS-Bootstrap-Server  
+Bu ismi makineye ver.
+
+Ctrl + x 'e bas.
+Onaylamak için Y harfine bas.
+En sonda ise Enter'a bas.
+
+
+Makineyi yeniden başlat.
+```
+sudo reboot
+```
+
+
+### AWS CLI kurulumu
+
+
+WEB PAGE 
+https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html#cliv2-linux-install
+
+```
+sudo su
+
+pwd
+
+
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+
+apt install unzip
+
+unzip awscliv2.zip
+
+sudo ./aws/install --bin-dir /usr/local/bin --install-dir /usr/local/aws-cli --update
+```
+
+
+### Kubectl kurulumu
+```
+sudo su
+
+pwd
+```
+
+Web Sayfası  
+https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html
+
+```
+curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/1.30.4/2024-09-11/bin/linux/amd64/kubectl
+
+
+ll
+
+chmod +x ./kubectl
+
+ll 
+
+
+mv kubectl /bin 
+
+
+export PATH=$HOME/bin:$PATH
+                                  
+kubectl version --output=yaml
+```
+
+
+### eksctl
+
+Web Sayfası
+https://docs.aws.amazon.com/eks/latest/userguide/install-kubectl.html#linux_amd64_kubectl
+
+```
+sudo su
+
+pwd
+
+
 curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
 
+cd /tmp
 
+ll 
+
+sudo   mv    /tmp/eksctl     /bin
+
+eksctl version
+```
+
+Makineyi yeniden başlat.
+```
+sudo reboot
+```
+
+Kubectl sürümü bilgisini al.
+```
+kubectl version --client
+```
+
+
+
+### EKS makinesi için us-east-2 bölgesinden 2 tane node oluşturacağız. 
+```
+eksctl create cluster --name my-workspace-cluster \
+--region us-east-2 \
+--node-type t3.large \
+--nodes 2 
+```
+
+Makineyi yeniden başlat.
+```
+sudo reboot
+```
+
+EKS makinesinin terminalinde Node ve Pod bilgilerini öğren.
+```
+kubectl get nodes
+
+kubectl get pods
+kubectl get pod
+kubectl get po
+```
+
+
+### ArgoCD
+
+Web Sayfası
+https://argo-cd.readthedocs.io/en/stable/getting_started/
+
+```
+kubectl create namespace argocd
+
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+kubectl get pods -n argocd
+```
+
+Yönetici moduna geç.
+```
+sudo su
+
+pwd
+```
+
+
+### ArgoCD sürümünü çekeceğiz.
+
+Son sürümü çekmek için bu 3 satır gerekli.
+
+```
+curl -L -s https://raw.githubusercontent.com/argoproj/argo-cd/stable/VERSION
+
+VERSION=$(curl -L -s https://raw.githubusercontent.com/argoproj/argo-cd/stable/VERSION)
+
+curl --silent --location -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v$VERSION/argocd-linux-amd64
+```
+
+
+OR
+
+Sürümün elle yazılmışı
+```
+curl --silent --location -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.12.3/argocd-linux-amd64
+```    
+
+ArgoCD kullanım hakkını alıyoruz.
+```	
+chmod +x /usr/local/bin/argocd
+```
+
+
+Normal kullanıcı moduna geç. Terminale bunu yaz.
+```
+exit 
+```
+
+
+EKS makinesinde dış servis ayarlarını yapıyoruz.
+```
+kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+
+kubectl get svc -n argocd
+```
+
+ArgoCD dış dünyaya böyle bir adres ile açılıyor.
+
+a5b3d196d6343444dbd692184429ca6b-117814533.us-east-1.elb.amazonaws.com 
+ 
+ 
+Admin şifresini almak bu komutu kullan 
+```
+kubectl get secret argocd-initial-admin-secret -n argocd -o yaml
+```
+
+Açıklama kısmındaki şifreli halde duran parolayı alıyoruz ve çözüyoruz.
+```
+echo     ellOckVqVzZEQ3RCb2toRg==  | base64 --decode
+```
+
+Size böyle bir sonuç verecek.
+
+zYNrEjW6DCtBokhF ubuntu@My-EKS-Master-Server:~$
+
+Admin şifresi budur.
+
+zYNrEjW6DCtBokhF
+
+
+
+ArgoCD'ye web tarayıcısı üzerinden giriş yapıyoruz. 
+
+Giriş yap ve "User Info" menüsünden parolayı hemen güncelle.
+
+
+
+Terminalden ArgoCD kullanımı
+```
+argocd login ad22e3a897977425fb3d85ffd2fc1183-1747909152.us-east-2.elb.amazonaws.com   --username admin
+
+argocd cluster list
+```
+
+
+
+Çalışılan K8s cluster adını alıyoruz.
+```
+kubectl config  get-contexts
+```
+
+K8s cluster adını ArgoCD'ye veriyoruz.
+```
+argocd cluster add i-01b7b0cfff36e42d5@my-workspace2-cluster.us-east-2.eksctl.io  --name my-workspace2-cluster
+```
+
+EKS servis bilgisi komutları
+```
+kubectl get svc
+kubectl get service
+```
+
+MyGitHubToken
+ghp_123456789123456789123456789
+
+
+
+GitOps projesini tetikleme yetkisi için Jenkins Admin token'ı oluşturuyoruz.
+
+JENKINS_API_TOKEN
+
+123456789123456789123456789
+
+
+
+Pod içinde çalışan uygulamayı web tarayıcısı üzerinden görebiliriz.
+```
+kubectl get service  
+```
+
+http://a72903a0997564a328c47bc910f75aa8-253506306.us-east-1.elb.amazonaws.com:8080
+
+
+
+#### Agent makinedeki Docker image dosyalarını temizleme. 
+
+Agent makinesi zamanla dolacak. Docker şişecek dolacak. Temizlik yapmanız lazım.
+Agent makinede temizlik için yeriniz azalmışsa şu komutları kulanın lütfen
+
+```
+docker rmi $(docker images --format '{{.Repository}}:{{.Tag}}' | grep 'devops-003-pipeline-aws')
+
+docker container rm -f $(docker container ls -aq)
+
+docker volume prune -f
+```
+
+
+
+
+
+
+## EKS nodelarını silme süreci
+
+https://docs.aws.amazon.com/eks/latest/userguide/delete-cluster.html
+
+```
+eksctl version
+```
+
+Çalışan tüm servisleri listele
+```
+kubectl get svc --all-namespaces
+```
+
+Sadece bir servisi silmek için bu komutu kullanıyoruz ama şimdi servisleri tek tek silmeyeceğiz!!! 
+```
+kubectl delete svc SERVISIN_ADI
+```
+
+
+Cluster adını ve detaylarını görmek için
+```
+kubectl config view
+```
+
+
+Silmeden önce konumu mutlaka belirtmek lazım.
+```
+export AWS_DEFAULT_REGION=us-east-2
+```
+
+Nodeları ve servislerin hepsini cluster adını vererek toplu halde sileceğiz.
+```
+eksctl delete cluster  --name  my-workspace2-cluster
+```
