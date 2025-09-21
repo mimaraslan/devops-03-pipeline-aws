@@ -833,7 +833,7 @@ Elimizle terminalden imajları tek tek silmek komutları
 
 
 
-<hr>
+
 
 ## === Makine 4: My EKS Master Server ============================
 K8s için bir makine oluşturduk. İçine Kubernetes kuracağız.
@@ -961,14 +961,14 @@ docker volume prune -f
 ```
 
 
-<hr>
-===============================
+
+
 ## === Makine 4:  My EKS (Elastic Kubernetes Service) Server  =====
+
 ```
 sudo apt update
 
 sudo apt upgrade -y
-
 ```
 
 Makinenin hostname kısmını aç ve adını güncelle.
