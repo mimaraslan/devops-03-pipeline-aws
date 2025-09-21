@@ -9,6 +9,7 @@ pipeline {
         maven 'Maven3'
         jdk 'Java21'
     }
+
     environment {
         APP_NAME = "devops-03-pipeline-aws"
         RELEASE = "1.0"
@@ -16,7 +17,9 @@ pipeline {
         DOCKER_LOGIN = 'dockerhub'
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}.${BUILD_NUMBER}"
+        JENKINS_API_TOKEN = credentials("JENKINS_API_TOKEN")
     }
+
     stages {
         stage('SCM GitHub') {
             steps {
@@ -203,7 +206,7 @@ pipeline {
         stage("Trigger CD Pipeline") {
             steps {
                 script {
-                    sh "curl -v -k --user mimaraslan:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-35-169-94-227.compute-1.amazonaws.com:8080/job/devops-03-pipeline-aws-gitops-v2/buildWithParameters?token=GITOPS_TRIGGER_START'"
+                    sh "curl -v -k --user admin:${JENKINS_API_TOKEN} -X POST -H 'cache-control: no-cache' -H 'content-type: application/x-www-form-urlencoded' --data 'IMAGE_TAG=${IMAGE_TAG}' 'ec2-35-169-94-227.compute-1.amazonaws.com:8080/job/devops-03-pipeline-aws-gitops-v2/buildWithParameters?token=GITOPS_TRIGGER_START'"
                 }
             }
         }
